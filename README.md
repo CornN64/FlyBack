@@ -1,6 +1,6 @@
 # Flyback Converter Calculator
 
-A self-contained design tool for flyback (reverse-converting) power supplies. Enter the input voltage range, output voltage, load current, and switching frequency to get the operating point, proposed magnetizing inductance and turns ratio, and steady-state waveforms over one switching period.
+A self-contained design tool for flyback power supplies. Enter the input voltage range, output voltage, load current, and switching frequency to get the operating point, proposed magnetizing inductance and turns ratio, and steady-state waveforms over one switching period.
 
 ![Flyback calculator](FB.png)
 
@@ -51,7 +51,4 @@ DCM operating point uses `peakPrimary = sqrt(2 · (Vout + Vf) · Iout / (L · f)
 
 ## Files
 
-| File | Purpose |
-|------|---------|
-| `FlyBack.html` | The calculator — all HTML, CSS, and JavaScript in one file, no external dependencies |
-| `FB.png` | Screenshot of the calculator with schematic and waveforms |
+FlyBack.html The calculator — all HTML, CSS, and JavaScript in one file, no external dependencies.

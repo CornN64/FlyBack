@@ -454,7 +454,7 @@
       <div>
         <p class="eyebrow">Isolated DC-DC design</p>
         <h1 id="page-title">Flyback converter</h1>
-        <p class="hero-copy">Estimate the magnetizing inductance and turns ratio, then inspect the switch and winding waveforms at a selected input voltage.</p>
+        <p class="hero-copy">Estimate the magnetizing inductance and turns ratio and compute switch and winding waveforms at a selected input voltage.</p>
         <p class="hero-copy">Walter Puccio 2026</p>
       </div>
       <svg class="diagram" viewBox="0 0 1200 620"
@@ -629,7 +629,7 @@
     <div class="layout">
       <aside class="panel input-panel">
         <h2 class="section-heading">Design inputs</h2>
-        <p class="section-hint">Enter the operating range and load. Results update as you edit.</p>
+        <p class="section-hint">Enter the operating range and load.</p>
         <form id="design-form" novalidate>
           <div class="field-grid">
             <div class="field">
@@ -666,13 +666,13 @@
           </div>
           <label class="proposal" style="margin-top:13px"><input id="propose-ratio" type="checkbox" checked> Propose turns ratio</label>
           <div class="field">
-            <label for="ratio">Primary / secondary turns, N1 / N2</label>
+            <label for="ratio">Primary(N1) / secondary(N2) turns</label>
             <input id="ratio" name="ratio" type="number" step="any" min="0" value="2.0">
           </div>
           <button class="primary-button" type="submit">Calculate waveforms</button>
           <p id="form-error" class="form-error" role="alert"></p>
         </form>
-        <p class="model-note">Proposal values place the converter at the continuous/discontinuous boundary at the average input voltage, with a 50% duty cycle.</p>
+        <p class="model-note">Proposed values place the converter at the continuous/discontinuous boundary at the average input voltage, with a 50% duty cycle.</p>
       </aside>
 
       <section class="results" aria-labelledby="results-heading">
@@ -688,7 +688,7 @@
         <div class="chart-grid">
           <article class="chart-card">
             <h3 class="chart-title">Switch and secondary currents</h3>
-            <p class="chart-subtitle">Primary and secondary currents use independent vertical scales</p>
+            <p class="chart-subtitle">Primary and secondary currents</p>
             <canvas id="current-chart" aria-label="Primary and secondary current waveforms"></canvas>
             <div class="legend">
               <span class="legend-item"><i class="legend-line" style="--legend-color:#2563eb"></i>Primary switch current</span>
@@ -697,7 +697,7 @@
           </article>
           <article class="chart-card">
             <h3 class="chart-title">Switch drain-source voltage</h3>
-            <p class="chart-subtitle">Ideal switch; leakage-inductance spikes excluded</p>
+            <p class="chart-subtitle">Ideal switch; no leakage-inductance spikes</p>
             <canvas id="switch-chart" aria-label="MOSFET drain-source voltage waveform"></canvas>
             <div class="legend">
               <span class="legend-item"><i class="legend-line" style="--legend-color:#e87926"></i>Vds</span>
@@ -724,7 +724,7 @@
             <div class="equation">DCCM = Vref / (Vin + Vref), Vref = (Vout + Vf) N1/N2</div>
             <div class="equation">ΔI = Vin D / (L f), Vds,off = Vin + Vref</div>
           </div>
-          <p class="assumptions">Uses Vf = 0.7 V, an ideal switch, no leakage inductance, and lossless magnetic coupling. The estimated input power includes the output-diode drop; real hardware has additional losses and voltage spikes.</p>
+          <p class="assumptions">Uses Vf = 0.7 V, an ideal switch, no leakage inductance, and lossless magnetic coupling. The estimated input power includes the output-diode drop; real hardware has additional core/switch losses and voltage spikes.</p>
         </section>
       </section>
     </div>
@@ -846,7 +846,7 @@
           setStat("Switch voltage, off", format(model.switchVoltage), "V"),
           setStat("Worst-case Vds", format(model.maxSwitchVoltage), "V @ Vin max"),
           setStat("Output power", format(model.outputPower), "W"),
-          setStat("Proposed L · N1/N2", `${format(model.inductance * 1000)} · ${format(model.turnsRatio)}`, "mH · ratio")
+          setStat("Secondary L", format(1000*model.inductance / (format(model.turnsRatio)*format(model.turnsRatio))), "mH")
         );
         const modePill = document.getElementById("mode-pill");
         modePill.textContent = model.mode === "CCM" ? "Continuous mode" : "Discontinuous mode";
