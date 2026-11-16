@@ -204,6 +204,43 @@
       pointer-events: none;
     }
 
+    .field input.voltage-slider {
+      display: block;
+      width: 100%;
+      height: 24px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      accent-color: var(--blue);
+      cursor: pointer;
+    }
+
+    .field input.voltage-slider:focus {
+      box-shadow: none;
+    }
+
+    .field input.voltage-slider:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+
+    .slider-value {
+      color: var(--blue-dark);
+      font-size: 13px;
+      font-weight: 750;
+      font-variant-numeric: tabular-nums;
+      align-self: flex-end;
+    }
+
+    .slider-endpoints {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+    }
+
     .divider {
       height: 1px;
       margin: 18px 0 15px;
@@ -642,7 +679,9 @@
             </div>
             <div class="field field-wide">
               <label for="vin">Input voltage for waveforms</label>
-              <div class="field-unit"><input id="vin" name="vin" type="number" step="any" min="0" value="28"><span>V</span></div>
+              <output id="vin-value" class="slider-value" for="vin">28 V</output>
+              <input id="vin" class="voltage-slider" name="vin" type="range" step="any" min="22" max="32" value="28" aria-describedby="vin-range">
+              <div id="vin-range" class="slider-endpoints"><span id="vin-min-label">22 V</span><span id="vin-max-label">32 V</span></div>
             </div>
             <div class="field">
               <label for="vout">Output voltage</label>
@@ -746,10 +785,33 @@
       const proposeL = document.getElementById("propose-l");
       const proposeRatio = document.getElementById("propose-ratio");
       const formError = document.getElementById("form-error");
+      const vinValue = document.getElementById("vin-value");
+      const vinMinLabel = document.getElementById("vin-min-label");
+      const vinMaxLabel = document.getElementById("vin-max-label");
       const format = (value, digits = 3) => {
         if (!Number.isFinite(value)) return "—";
         return new Intl.NumberFormat("en-US", { maximumSignificantDigits: digits }).format(value);
       };
+      function syncVinSlider() {
+        const min = Number(fields.vinMin.value);
+        const max = Number(fields.vinMax.value);
+        const validRange = Number.isFinite(min) && Number.isFinite(max) && min > 0 && max >= min;
+        fields.vin.disabled = !validRange;
+        if (!validRange) {
+          vinMinLabel.textContent = "—";
+          vinMaxLabel.textContent = "—";
+          return;
+        }
+
+        fields.vin.min = String(min);
+        fields.vin.max = String(max);
+        const current = Number(fields.vin.value);
+        const value = Math.min(max, Math.max(min, Number.isFinite(current) ? current : min));
+        fields.vin.value = String(value);
+        vinValue.value = `${format(value)} V`;
+        vinMinLabel.textContent = `${format(min)} V`;
+        vinMaxLabel.textContent = `${format(max)} V`;
+      }
       const readInputs = () => Object.fromEntries(
         Object.entries(fields).map(([name, element]) => [name, Number(element.value)])
       );
@@ -839,10 +901,10 @@
       function updateSummary(model) {
         const stats = document.getElementById("stats");
         stats.replaceChildren(
-          setStat("Duty cycle", format(model.dutyOn * 100, 4), "%"),
+          setStat("Duty cycle", format(model.dutyOn * 100, 3), "%"),
           setStat("Peak primary current", format(model.peakPrimary), "A"),
           setStat("Peak secondary current", format(model.peakSecondary), "A"),
-          setStat("Current ripple", format(model.ripple), "A p-p"),
+          setStat("Current ripple", format(model.ripple,2), "A p-p"),
           setStat("Switch voltage, off", format(model.switchVoltage), "V"),
           setStat("Worst-case Vds", format(model.maxSwitchVoltage), "V @ Vin max"),
           setStat("Output power", format(model.outputPower), "W"),
@@ -1045,10 +1107,15 @@
         render();
       });
       for (const element of [...Object.values(fields), proposeL, proposeRatio]) {
-        element.addEventListener("input", render);
+        element.addEventListener("input", () => {
+          if (element === fields.vinMin || element === fields.vinMax) syncVinSlider();
+          if (element === fields.vin) vinValue.value = `${format(Number(fields.vin.value))} V`;
+          render();
+        });
         element.addEventListener("change", render);
       }
       window.addEventListener("resize", render);
+      syncVinSlider();
       render();
     })();
   </script>

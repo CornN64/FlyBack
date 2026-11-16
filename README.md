@@ -6,7 +6,7 @@ A self-contained design tool for flyback power supplies. Enter the input voltage
 
 ## Features
 
-- **Design inputs**: input minimum/maximum, waveform input voltage, output voltage, output current, switching frequency.
+- **Design inputs**: input minimum/maximum, a waveform-voltage slider bounded by that range, output voltage, output current, switching frequency.
 - **Proposed values**: proposes the primary magnetizing inductance and N1/N2 turns ratio that place the converter at the continuous/discontinuous boundary at the average input voltage (50% duty). Uncheck the proposals to enter your own L and N1/N2.
 - **Mode detection**: reports CCM or DCM, duty cycle, peak primary/secondary currents, current ripple, switch off-voltage, worst-case Vds at Vin max, and output power.
 - **Waveform plots** (Canvas, no libraries):
@@ -18,7 +18,7 @@ A self-contained design tool for flyback power supplies. Enter the input voltage
 ## Quick start
 
 1. Open `FlyBack.html` in any modern browser (double-click it; no server needed).
-2. Enter your operating range — defaults shown are 22–32 V input, 28 V waveform voltage, 12 V output, 1 A, 200 kHz.
+2. Enter your operating range — defaults shown are 22–32 V input, a 28 V waveform voltage selected with the range-bounded slider, 12 V output, 1 A, 200 kHz.
 3. Keep *Propose primary inductance* and *Propose turns ratio* checked to auto-size L and N1/N2, or uncheck them and enter values manually.
 4. Click **Calculate waveforms** (or just keep editing — results update automatically).
 
