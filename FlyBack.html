@@ -798,6 +798,7 @@
         const validRange = Number.isFinite(min) && Number.isFinite(max) && min > 0 && max >= min;
         fields.vin.disabled = !validRange;
         if (!validRange) {
+          vinValue.value = "—";
           vinMinLabel.textContent = "—";
           vinMaxLabel.textContent = "—";
           return;
@@ -904,11 +905,11 @@
           setStat("Duty cycle", format(model.dutyOn * 100, 3), "%"),
           setStat("Peak primary current", format(model.peakPrimary), "A"),
           setStat("Peak secondary current", format(model.peakSecondary), "A"),
-          setStat("Current ripple", format(model.ripple,2), "A p-p"),
+          setStat("Current ripple", format(model.ripple,3), "A p-p"),
           setStat("Switch voltage, off", format(model.switchVoltage), "V"),
           setStat("Worst-case Vds", format(model.maxSwitchVoltage), "V @ Vin max"),
           setStat("Output power", format(model.outputPower), "W"),
-          setStat("Secondary L", format(1000*model.inductance / (format(model.turnsRatio)*format(model.turnsRatio))), "mH")
+          setStat("Secondary L", format(1000*model.inductance / (model.turnsRatio * model.turnsRatio)), "mH")
         );
         const modePill = document.getElementById("mode-pill");
         modePill.textContent = model.mode === "CCM" ? "Continuous mode" : "Discontinuous mode";
